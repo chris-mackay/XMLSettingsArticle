@@ -1,0 +1,239 @@
+﻿<!DOCTYPE HTML>
+<!--------------------------------------------------------------------------->  
+<!--                           INTRODUCTION                                
+
+ The CodeProject article submission template (HTML version)
+
+Using this template will help us post your article sooner. To use, just 
+follow the 3 easy steps below:
+ 
+     1. Fill in the article description details
+     2. Add links to your images and downloads
+     3. Include the main article text
+
+That's all there is to it! All formatting will be done by our submission
+scripts and style sheets. 
+
+-->  
+<!--------------------------------------------------------------------------->  
+<!--                        IGNORE THIS SECTION                            -->
+<html>
+<head>
+<title>CodeProject</title>
+<Style>
+BODY, P, TD { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10pt }
+BODY {padding:15px; }
+H2,H3,H4,H5 { color: #ff9900; font-weight: bold; }
+H2 { font-size: 13pt; }
+H3 { font-size: 12pt; }
+H4 { font-size: 10pt; color: black; }
+PRE { BACKGROUND-COLOR: #FBEDBB; FONT-FAMILY: "Courier New", Courier, mono; WHITE-SPACE: pre; }
+CODE { COLOR: #990000; FONT-FAMILY: "Courier New", Courier, mono; }
+</style>
+<link type="text/css" rel="stylesheet" 
+      href="https://codeproject.global.ssl.fastly.net/App_Themes/CodeProject/Css/Main.min.css">
+</head>
+<body bgcolor="#FFFFFF" color=#000000>
+<!--------------------------------------------------------------------------->  
+
+
+<!-------------------------------     STEP 1      --------------------------->
+<!--  Fill in the details (CodeProject will reformat this section for you) -->
+
+<pre>
+Title:       XML Application Settings
+Description: Save and retrieve user settings for you application in an XML file
+Abstract:    Demonstrates the use of a class library for saving and retrieving data from an XML file
+
+Author:      chris_mackay
+Email:       cmackay732@gmail.com
+
+Language:    C# 7.3
+Platform:    Windows Desktop
+Technology:  .NET Framework 4.5
+Topic:       Application Settings
+
+Section      Desktop Programming
+SubSection   Windows Forms
+
+License:     CPOL
+</pre lang="cs">
+
+<!-------------------------------     STEP 2      --------------------------->
+<!--  Include download and sample image information.                       --> 
+
+<ul class=download>
+<li><a href="Article_demo.zip">Download demo project - XXX Kb </a></li>
+<li><a href="Article_src.zip">Download source - XXX Kb</a></li>
+</ul>
+
+<p><img src="article.png" alt="article"></p>
+
+<!-------------------------------     STEP 3      --------------------------->
+
+<!--  Add the article text. Please use simple formatting (<h2>, <p> etc)   -->
+
+<h2>Introduction</h2>
+
+<p>This article will demonstrate the use of a simple static class library for saving and retrieving user settings data within an XML file. 
+   The image above is the XML file content format; a single node deep structure for storing key/value pairs.
+</p>
+
+<p></p>
+
+<h2>Implementation</h2>
+
+<pre lang="cs">//
+// Specify settings and initial values
+//---------------------------------------------------------
+
+StringCollection settings = new StringCollection();
+
+// First value = Setting name
+// Second value = Initial value
+
+settings.Add("BorderNone,True");
+settings.Add("BorderSingle,False");
+settings.Add("Border3D,False");
+settings.Add("PictureBoxBackColor,#F0F0F0");
+
+XMLSettings.AppSettingsFile = "Settings.xml"; // Set the file path
+XMLSettings.InitializeSettings(settings); // Create file and set initial values
+
+//----------------------------------------------------------
+
+// Read settings values
+
+rbNone.Checked = bool.Parse(XMLSettings.GetSettingsValue("BorderNone"));
+rbBorderSingle.Checked = bool.Parse(XMLSettings.GetSettingsValue("BorderSingle"));
+rbBorder3D.Checked = bool.Parse(XMLSettings.GetSettingsValue("Border3D"));
+txtColor.Text = XMLSettings.GetSettingsValue("PictureBoxBackColor");
+
+// Set settings values
+
+XMLSettings.SetSettingsValue("BorderNone", rbNone.Checked.ToString());
+XMLSettings.SetSettingsValue("BorderSingle", rbBorderSingle.Checked.ToString());
+XMLSettings.SetSettingsValue("Border3D", rbBorder3D.Checked.ToString());
+XMLSettings.SetSettingsValue("PictureBoxBackColor", txtColor.Text);
+
+</pre>
+
+<h2>Basic principles</h2>
+
+<p>There are three methods and a <code>string</code> that you will use below.</p>
+
+<pre lang="cs">
+public static string AppSettingsFile
+</pre>
+
+<p>Specify where you want the settings file to be saved for your application.</p>
+
+<pre lang="cs">
+public static void InitializeSettings(StringCollection _AppSettings)
+</pre>
+
+<p><code>InitializeSettings()</code> takes a <code>StringCollection</code> object, creates the settings file
+      in the location specified and adds the settings with their initial values.
+</p>
+
+<pre lang="cs">
+public static void SetSettingsValue(string _Field, string _Value)
+</pre>
+
+<p>Specify the setting you want to update and it's new value.</p>
+
+<pre lang="cs">
+public static string GetSettingsValue(string _Field)
+</pre>
+
+<p>Retrieve a specific setting and it's current value.</p>
+
+<h2>Under the hood</h2>
+
+<p>All code exists in <code>XMLSettings.cs</code>. It utilizes the <code>System.Xml</code>, and <code>System.Collections.Specialized</code> namespaces.</p>
+
+<p>Starting at the top of the file...</p>
+
+<pre lang="cs">
+private static bool SettingsFileExists()
+{
+      bool flag = false;
+
+      if (File.Exists(AppSettingsFile))
+            flag = true;
+      else
+            flag = false;
+
+      return flag;
+}
+</pre>
+
+<p><code>SettingsFileExists()</code> is a simple helper method for checking whether the settings file already exists. Used in <code>InitializeSettings()</code>.</p>
+
+<pre lang="cs">
+public static string GetSettingsValue(string _Field)
+{
+      XmlDocument doc = new XmlDocument();
+      doc.Load(AppSettingsFile);
+
+      XmlNode node = null;
+      node = doc.SelectSingleNode("//Settings/" + _Field);
+
+      string value = string.Empty;
+
+      if (node == null)
+            value = string.Empty;
+      else
+            value = node.InnerText;
+
+      return value;
+}
+</pre>
+
+<p><code>GetSettingsValue()</code> utilites the <code>XmlDocument</code> object to load the contents of the file.
+      Once the file is loaded, we use the <code>XmlNode</code> object and the <code>SelectSingleNode()</code> method to locate the setting that we want to read the value of. 
+      The <code>InnerText</code> property of the <code>XmlNode</code> object is used to retrieve the value of the specifed setting.</p>
+
+<pre lang="cs">
+public static void SetSettingsValue(string _Field, string _Value)
+{
+      XmlDocument doc = new XmlDocument();
+      doc.Load(AppSettingsFile);
+
+      _Field = "//Settings/" + _Field;
+
+      if (doc.SelectSingleNode(_Field) == null)
+      {
+            _Field = _Field.Replace("//Settings/", "");
+            XmlNode field = doc.CreateElement(_Field);
+            field.InnerText = _Value;
+            doc.DocumentElement.AppendChild(field);
+            doc.Save(AppSettingsFile);
+      }
+      else
+      {
+            XmlNode node = null;
+            node = doc.SelectSingleNode(_Field);
+            node.InnerText = _Value;
+            doc.Save(AppSettingsFile);
+      }
+}
+</pre>
+
+<p>As with <code>GetSettingsValue()</code> above, <code>SetSettingsValue()</code> loads the contents of the file.
+We then attempt to select an <code>XmlNode</code> from the document. 
+If none exist with the name provided, we create a new setting with the <code>XmlDocument.DocumentElement.AppendChild()</code> method.
+Once the setting has been added we then <code>Save()</code> the document.
+If a setting with the name provided does exist, we just assign a new value to the <code>InnerText</code> property and then <code>Save()</code> the document.
+</p>
+
+<h2>Conclusion and Points of Interest</h2>
+
+<p>What did the reader learn in this article? Did you learn anything interesting/fun/annoying 
+while writing the code? Any gotchas you came across?</p>
+
+
+</body>
+
+</html>
+
