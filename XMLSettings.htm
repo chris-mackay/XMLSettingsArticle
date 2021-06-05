@@ -91,6 +91,7 @@ StringCollection settings = new StringCollection();
 
 // First value = Setting name
 // Second value = Initial value
+// Values are separated with a comma
 
 settings.Add("BorderNone,True");
 settings.Add("BorderSingle,False");
@@ -235,9 +236,12 @@ public static void SetSettingsValue(string _Field, string _Value)
 }
 </pre>
 
-
-
 <h3>InitializeSettings</h3>
+
+<code>InitializeSettings()</code> does a few basic things. First, it checks whether or not the settings file
+exists. If it does not, it will create the file, loop through all the settings in the <code>StringCollection</code> and add them
+to the file. If the file does exist, it will check to see if there have been any new settings added to the <code>StringCollection</code>,
+and add the ones that don't exist in the file and set the initial value.
 
 <pre lang="cs">
 public static void InitializeSettings(StringCollection _AppSettings)
@@ -309,11 +313,24 @@ public static void InitializeSettings(StringCollection _AppSettings)
 }
 </pre>
 
-<h2>Conclusion and Points of Interest</h2>
+<h2>Conclusion</h2>
 
-<p>What did the reader learn in this article? Did you learn anything interesting/fun/annoying 
-while writing the code? Any gotchas you came across?</p>
+<p>Hopefully you have found this interesting. I wanted to write a simple class that I could use in my applications
+      to store user settings, however, after using it and writing this article I would like to improve the following items below.
+      <ul>
+            <li>
+                  Revise code to eliminate using a <code>StringCollection</code> with values separated by a comma.
+                  I currently have not run into any issues with the implementation considering I have always hand coded these values, however handling commas
+                  can be a hassle. I will explore using a <code>Dictionary</code>. Recommendations are welcome in the comments.
+            </li>
+            <li>
+                  Figure out a way to dynamically create an enum based on the settings that are in the file to eliminate potential errors
+                  due to spelling mistakes. Perhaps a <code>Dictionary</code> will also help with this.
+            </li>
+      </ul>
+</p>
 
+<p>Comments and recommendations for improvement are welcome. Thanks for reading!</p>
 
 </body>
 
