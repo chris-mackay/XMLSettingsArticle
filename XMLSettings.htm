@@ -42,7 +42,7 @@ CODE { COLOR: #990000; FONT-FAMILY: "Courier New", Courier, mono; }
 
 <pre>
 Title:       XML Application Settings
-Description: Save and retrieve user settings for you application in an XML file
+Description: Save and retrieve user settings for your application in an XML file
 Abstract:    Demonstrates the use of a class library for saving and retrieving data from an XML file
 
 Author:      chris_mackay
@@ -63,8 +63,8 @@ License:     CPOL
 <!--  Include download and sample image information.                       --> 
 
 <ul class=download>
-<li><a href="Article_demo.zip">Download demo project - XXX Kb </a></li>
-<li><a href="Article_src.zip">Download source - XXX Kb</a></li>
+<li><a href="XMLSettingsDemo.zip">Download demo project</a></li>
+<li><a href="https://github.com/chris-mackay/XMLSettings">Download source</a></li>
 </ul>
 
 <p><img src="article.png" alt="article"></p>
@@ -123,14 +123,10 @@ XMLSettings.SetSettingsValue("PictureBoxBackColor", txtColor.Text);
 
 <p>There are three methods and a <code>string</code> that you will use below.</p>
 
-<pre lang="cs">
-public static string AppSettingsFile
-</pre>
-
 <p>Specify where you want the settings file to be saved for your application.</p>
 
 <pre lang="cs">
-public static void InitializeSettings(StringCollection _AppSettings)
+public static string AppSettingsFile
 </pre>
 
 <p><code>InitializeSettings()</code> takes a <code>StringCollection</code> object, creates the settings file
@@ -138,16 +134,20 @@ public static void InitializeSettings(StringCollection _AppSettings)
 </p>
 
 <pre lang="cs">
-public static void SetSettingsValue(string _Field, string _Value)
+public static void InitializeSettings(StringCollection _AppSettings)
 </pre>
 
 <p>Specify the setting you want to update and it's new value.</p>
 
 <pre lang="cs">
-public static string GetSettingsValue(string _Field)
+public static void SetSettingsValue(string _Field, string _Value)
 </pre>
 
 <p>Retrieve a specific setting and it's current value.</p>
+
+<pre lang="cs">
+public static string GetSettingsValue(string _Field)
+</pre>
 
 <h2>Under the hood</h2>
 
@@ -315,7 +315,7 @@ public static void InitializeSettings(StringCollection _AppSettings)
 
 <h2>Conclusion</h2>
 
-<p>Hopefully you have found this interesting. I wanted to write a simple class that I could use in my applications
+<p>I wanted to write a simple class that I could use in my applications
       to store user settings, however, after using it and writing this article I would like to improve the following items below.
       <ul>
             <li>
